@@ -1,4 +1,5 @@
 ![Compilation](https://github.com/carlansell94/hotel-room-booking-service/actions/workflows/rust.yml/badge.svg)
+![Docker Build](https://github.com/carlansell94/hotel-room-booking-service/actions/workflows/docker-publish.yml/badge.svg)
 
 # Rust Hotel Room Booking Service
 
@@ -25,7 +26,25 @@ A full list of dependencies can be found in ```Cargo.toml```.
 
 ## How To Use
 
-Clone the repository and build the service using cargo. In the root project directory, run
+If you use docker, the easiest way to use the service is to use the pre-built container, which is updated on every commit.
+
+To do this, run
+
+```sh
+docker pull ghcr.io/carlansell94/hotel-room-booking-service:master
+```
+
+It can also be used as a base image by adding
+
+```sh
+FROM ghcr.io/carlansell94/hotel-room-booking-service:master
+```
+
+to your Dockerfile.
+
+The current Docker build status is displayed in the badge at the top of this file.
+
+You can also clone the repository and build the service directly using cargo. In the root project directory, run
 
 ```sh
 cargo build --release
