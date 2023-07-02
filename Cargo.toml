@@ -1,0 +1,13 @@
+[package]
+name = "room_booking_service"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = "=0.5.0-rc.3"
+okapi = "0.7.0-rc.1"
+rocket_okapi = { version = "0.8.0-rc.3", features = ["swagger"]}
+serde = "1.0"
+once_cell = "1.18.0"
