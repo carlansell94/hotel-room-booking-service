@@ -54,6 +54,22 @@ pub fn fetch_by_customer_id(customer_id: u32) -> Vec<RoomBooking> {
     results
 }
 
+pub fn fetch_by_check_in_date(date: &str) -> Vec<RoomBooking> {
+    let booking_list: std::sync::MutexGuard<'_, HashMap<u32, RoomBooking>> =
+        match BOOKING_LIST.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Vec::new(),
+        };
+
+    let results: Vec<RoomBooking> = booking_list
+        .values()
+        .filter(|booking: &&RoomBooking| booking.check_in_date == date)
+        .cloned()
+        .collect();
+
+    results
+}
+
 pub fn fetch_by_room_type_id(room_type_id: u8) -> Vec<RoomBooking> {
     let booking_list: std::sync::MutexGuard<'_, HashMap<u32, RoomBooking>> =
         match BOOKING_LIST.lock() {

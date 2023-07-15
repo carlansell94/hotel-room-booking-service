@@ -57,6 +57,15 @@ fn get_customer_room_bookings(customer_id: u32) -> Json<Vec<RoomBooking>> {
     return Json(storage::fetch_by_customer_id(customer_id));
 }
 
+/// # Get room bookings starting on the provided date
+///
+/// Returns a list of bookings.
+#[openapi(tag = "Room Bookings")]
+#[get("/bookings/date/<date>")]
+fn get_bookings_starting_on_date(date: &str) -> Json<Vec<RoomBooking>> {
+    return Json(storage::fetch_by_check_in_date(date));
+}
+
 /// # Get room bookings for the specified room type
 ///
 /// Returns a list of bookings.
@@ -76,6 +85,7 @@ async fn main() {
                 create_room_booking,
                 get_room_bookings,
                 get_customer_room_bookings,
+                get_bookings_starting_on_date,
                 get_room_type_bookings
             ],
         )
