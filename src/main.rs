@@ -15,7 +15,7 @@ use storage::room_booking::*;
 ///
 /// Creates the room booking with the provided booking data.
 #[openapi(tag = "Room Booking")]
-#[post("/room-booking", format = "json", data = "<booking_details>")]
+#[post("/booking", format = "json", data = "<booking_details>")]
 pub fn create_room_booking(
     booking_details: Json<RoomBooking>,
 ) -> Result<Json<RoomBooking>, Status> {
@@ -30,7 +30,7 @@ pub fn create_room_booking(
 ///
 /// Returns booking details.
 #[openapi(tag = "Room Booking")]
-#[get("/room-booking/<booking_id>")]
+#[get("/booking/<booking_id>")]
 pub fn get_room_booking(booking_id: u32) -> Result<Json<RoomBooking>, Status> {
     let result: Option<RoomBooking> = storage::fetch_booking(booking_id);
     match result {
@@ -43,7 +43,7 @@ pub fn get_room_booking(booking_id: u32) -> Result<Json<RoomBooking>, Status> {
 ///
 /// Returns a list containing all room bookings in the system
 #[openapi(tag = "Room Bookings")]
-#[get("/room-bookings")]
+#[get("/bookings")]
 fn get_room_bookings() -> Json<Vec<RoomBooking>> {
     return Json(storage::fetch_all());
 }
@@ -52,7 +52,7 @@ fn get_room_bookings() -> Json<Vec<RoomBooking>> {
 ///
 /// Returns a list of bookings.
 #[openapi(tag = "Room Bookings")]
-#[get("/room-bookings/customer/<customer_id>")]
+#[get("/bookings/customer/<customer_id>")]
 fn get_customer_room_bookings(customer_id: u32) -> Json<Vec<RoomBooking>> {
     return Json(storage::fetch_by_customer_id(customer_id));
 }
@@ -61,7 +61,7 @@ fn get_customer_room_bookings(customer_id: u32) -> Json<Vec<RoomBooking>> {
 ///
 /// Returns a list of bookings.
 #[openapi(tag = "Room Bookings")]
-#[get("/room-bookings/room-type/<room_type_id>")]
+#[get("/bookings/room-type/<room_type_id>")]
 fn get_room_type_bookings(room_type_id: u8) -> Json<Vec<RoomBooking>> {
     return Json(storage::fetch_by_room_type_id(room_type_id));
 }
