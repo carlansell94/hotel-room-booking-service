@@ -13,3 +13,7 @@ ENV ROCKET_ADDRESS=0.0.0.0
 WORKDIR /
 COPY --from=building /room_booking/target/x86_64-unknown-linux-musl/release/room_booking_service ./
 CMD ./room_booking_service
+
+EXPOSE 8000/udp
+LABEL org.opencontainers.image.description="Hotel room booking service container"
+LABEL org.opencontainers.image.licenses=GPL-3.0-or-later

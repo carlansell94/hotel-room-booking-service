@@ -4,7 +4,7 @@
 */
 
 use rocket::http::Status;
-use rocket::{get, post, serde::json::Json};
+use rocket::{delete, get, post, put, serde::json::Json};
 use rocket_okapi::{openapi, openapi_get_routes, swagger_ui::*};
 
 mod storage;
@@ -13,7 +13,7 @@ use storage::room_booking::*;
 
 /// # Create a room booking with the provided data
 ///
-/// Creates the room booking with the provided booking data.
+/// Creates the room booking with the provided booking data. Returns the booking.
 #[openapi(tag = "Room Booking")]
 #[post("/booking", format = "json", data = "<booking_details>")]
 pub fn create_room_booking(
@@ -37,6 +37,24 @@ pub fn get_room_booking(booking_id: u32) -> Result<Json<RoomBooking>, Status> {
         Some(booking) => Ok(Json(booking)),
         None => Err(Status::NotFound),
     }
+}
+
+/// # Complete the booking with the provided booking id
+///
+/// Sets the status of the room booking specified to 'Complete'. Returns details of the booking.
+#[openapi(tag = "Room Booking")]
+#[put("/booking/<booking_id>/complete")]
+pub fn complete_room_booking(booking_id: u32) -> Json<bool> {
+    Json(storage::status(booking_id, BookingStatus::Complete))
+}
+
+/// # Cancel the booking with the provided booking id
+///
+/// Sets the booking status to 'Cancelled' for the booking with the provided id. Returns true on success, false on failure.
+#[openapi(tag = "Room Booking")]
+#[delete("/booking/<booking_id>")]
+pub fn cancel_room_booking(booking_id: u32) -> Json<bool> {
+    Json(storage::status(booking_id, BookingStatus::Cancelled))
 }
 
 /// # Get all room bookings
@@ -83,6 +101,8 @@ async fn main() {
             openapi_get_routes![
                 get_room_booking,
                 create_room_booking,
+                complete_room_booking,
+                cancel_room_booking,
                 get_room_bookings,
                 get_customer_room_bookings,
                 get_bookings_starting_on_date,

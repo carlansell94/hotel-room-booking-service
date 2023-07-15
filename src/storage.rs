@@ -3,7 +3,7 @@
     SPDX-FileCopyrightText: Copyright © 2023 Carl Ansell <@carlansell94>
 */
 
-use self::room_booking::RoomBooking;
+use self::room_booking::{BookingStatus, RoomBooking};
 use once_cell::sync::Lazy;
 use std::{collections::HashMap, sync::Mutex};
 pub mod room_booking;
@@ -22,9 +22,30 @@ pub fn create(mut booking: RoomBooking) -> Result<RoomBooking, ()> {
     let max_id = booking_list.keys().fold(std::u32::MIN, |a, b| a.max(*b));
     let next_id = max_id + 1;
     booking.set_booking_id(next_id);
+    booking.set_status(BookingStatus::Confirmed);
     booking_list.insert(next_id, booking.clone());
 
     return Ok(booking);
+}
+
+pub fn status(booking_id: u32, status: BookingStatus) -> bool {
+    let mut booking_list: std::sync::MutexGuard<'_, HashMap<u32, RoomBooking>> =
+        match BOOKING_LIST.lock() {
+            Ok(guard) => guard,
+            Err(_) => return false,
+        };
+
+    let booking: &mut RoomBooking = match booking_list.get_mut(&booking_id) {
+        Some(booking) => booking,
+        None => return false,
+    };
+
+    if booking.status != Some(BookingStatus::Confirmed) {
+        return false;
+    }
+
+    booking.set_status(status);
+    return true;
 }
 
 pub fn fetch_booking(booking_id: u32) -> Option<RoomBooking> {
