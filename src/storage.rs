@@ -5,13 +5,50 @@
 
 use self::room_booking::{BookingStatus, RoomBooking};
 use once_cell::sync::Lazy;
+use std::fs::{metadata, File};
+use std::io::{Read, Write};
 use std::{collections::HashMap, sync::Mutex};
 pub mod room_booking;
 
+static SNAPSHOT_PATH: &str = "booking.dat";
 static BOOKING_LIST: Lazy<Mutex<HashMap<u32, RoomBooking>>> = Lazy::new(|| {
     let map: HashMap<u32, RoomBooking> = HashMap::new();
     Mutex::new(map)
 });
+
+pub fn snapshot_exists() -> bool {
+    return metadata(SNAPSHOT_PATH).is_ok();
+}
+
+pub fn load_snapshot() -> Result<(), Box<dyn std::error::Error>> {
+    let mut file_content = Vec::new();
+    let mut file: File = File::open(SNAPSHOT_PATH)?;
+    file.read_to_end(&mut file_content)?;
+
+    let snapshot: HashMap<u32, RoomBooking> = bincode::deserialize(&file_content)
+        .map_err(|error| Box::new(error) as Box<dyn std::error::Error>)?;
+
+    *BOOKING_LIST.lock().unwrap() = snapshot;
+    return Ok(());
+}
+
+fn save_snapshot(booking_list: &HashMap<u32, RoomBooking>) -> bool {
+    let snapshot: Vec<u8> = bincode::serialize(&booking_list).unwrap_or_else(|_| {
+        return Vec::new();
+    });
+
+    let mut file = match File::create(SNAPSHOT_PATH) {
+        Ok(file) => file,
+        Err(_) => {
+            return false;
+        }
+    };
+
+    match file.write_all(&snapshot) {
+        Ok(_) => return true,
+        Err(_) => return false,
+    };
+}
 
 pub fn create(mut booking: RoomBooking) -> Result<RoomBooking, ()> {
     let mut booking_list: std::sync::MutexGuard<'_, HashMap<u32, RoomBooking>> =
@@ -24,7 +61,7 @@ pub fn create(mut booking: RoomBooking) -> Result<RoomBooking, ()> {
     booking.set_booking_id(next_id);
     booking.set_status(BookingStatus::Confirmed);
     booking_list.insert(next_id, booking.clone());
-
+    save_snapshot(&*booking_list);
     return Ok(booking);
 }
 
@@ -45,6 +82,7 @@ pub fn status(booking_id: u32, status: BookingStatus) -> bool {
     }
 
     booking.set_status(status);
+    save_snapshot(&*booking_list);
     return true;
 }
 

@@ -8,7 +8,6 @@ use rocket::{delete, get, post, put, serde::json::Json};
 use rocket_okapi::{openapi, openapi_get_routes, swagger_ui::*};
 
 mod storage;
-use crate::storage::create;
 use storage::room_booking::*;
 
 /// # Create a room booking with the provided data
@@ -19,7 +18,7 @@ use storage::room_booking::*;
 pub fn create_room_booking(
     booking_details: Json<RoomBooking>,
 ) -> Result<Json<RoomBooking>, Status> {
-    let result: Result<RoomBooking, ()> = create(booking_details.into_inner());
+    let result: Result<RoomBooking, ()> = storage::create(booking_details.into_inner());
     match result {
         Ok(booking) => Ok(Json(booking)),
         Err(_) => Err(Status::BadRequest),
@@ -95,6 +94,13 @@ fn get_room_type_bookings(room_type_id: u8) -> Json<Vec<RoomBooking>> {
 
 #[rocket::main]
 async fn main() {
+    if storage::snapshot_exists() {
+        match storage::load_snapshot() {
+            Ok(_) => println!("Loaded snapshot..."),
+            Err(err) => println!("An error occurred loading snapshot: {}", err),
+        }
+    }
+
     let launch_result = rocket::build()
         .mount(
             "/",

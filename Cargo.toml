@@ -11,3 +11,4 @@ okapi = "0.7.0-rc.1"
 rocket_okapi = { version = "0.8.0-rc.3", features = ["swagger"]}
 serde = "1.0"
 once_cell = "1.18.0"
+bincode = "1.3.3"
