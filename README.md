@@ -9,9 +9,11 @@ A hotel room booking management service written in rust.
 
 * Add new bookings
 * List all bookings
+* Cancel bookings
+* Mark bookings as completed
 * Get bookings by room type/customer
 
-This service does not currently feature long-term storage, with data stored in a ```HashMap```. This means any data held by the service will be lost once the service stops.
+Data is stored in a ```HashMap```, a copy of which is saved every time it is updated in the file ```bookings.dat```. This is automatically loaded every time the service starts.
 
 This service is intended to be used as part of a larger microservice-based hotel booking management application.
 
