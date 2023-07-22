@@ -7,7 +7,7 @@ use rocket_okapi::okapi::schemars;
 use rocket_okapi::okapi::schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Serialize, Deserialize, JsonSchema, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, JsonSchema, PartialEq, Debug)]
 pub enum BookingStatus {
     Confirmed,
     Complete,
@@ -25,7 +25,7 @@ impl BookingStatus {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Clone, Serialize, Deserialize, JsonSchema, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct RoomBooking {
     pub booking_id: Option<u32>,

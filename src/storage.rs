@@ -51,11 +51,16 @@ fn save_snapshot(booking_list: &HashMap<u32, RoomBooking>) -> bool {
 }
 
 pub fn create(mut booking: RoomBooking) -> Result<RoomBooking, ()> {
+    if booking.booking_id != None || booking.status != None {
+        return Err(())
+    }
+
     let mut booking_list: std::sync::MutexGuard<'_, HashMap<u32, RoomBooking>> =
         match BOOKING_LIST.lock() {
             Ok(guard) => guard,
             Err(_) => return Err(()),
         };
+
     let max_id = booking_list.keys().fold(std::u32::MIN, |a, b| a.max(*b));
     let next_id = max_id + 1;
     booking.set_booking_id(next_id);
@@ -86,7 +91,7 @@ pub fn status(booking_id: u32, status: BookingStatus) -> bool {
     return true;
 }
 
-pub fn fetch_booking(booking_id: u32) -> Option<RoomBooking> {
+pub fn fetch_by_id(booking_id: u32) -> Option<RoomBooking> {
     let booking_list: std::sync::MutexGuard<'_, HashMap<u32, RoomBooking>> =
         match BOOKING_LIST.lock() {
             Ok(guard) => guard,
@@ -154,4 +159,71 @@ pub fn fetch_all() -> Vec<RoomBooking> {
     };
 
     return list.values().cloned().collect();
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::storage::*;
+    use super::room_booking::RoomBooking;
+
+    fn dummmy_booking() -> RoomBooking {
+        return RoomBooking{
+            booking_id: None,
+            customer_id: 1,
+            room_type_id: 3,
+            check_in_date: "2020-01-01".to_string(),
+            check_out_date: "2020-01-08".to_string(),
+            status: None
+        };
+    }
+
+    fn dummmy_booking_success() -> RoomBooking {
+        return RoomBooking{
+            booking_id: Some(1),
+            customer_id: 1,
+            room_type_id: 3,
+            check_in_date: "2020-01-01".to_string(),
+            check_out_date: "2020-01-08".to_string(),
+            status: Some(BookingStatus::Confirmed)
+        }
+    }
+
+    #[test]
+    fn create_booking() {
+        assert_eq!(create(dummmy_booking()), Ok(dummmy_booking_success()));
+
+        let failed_booking = RoomBooking{
+            booking_id: Some(5),
+            customer_id: 4,
+            room_type_id: 2,
+            check_in_date: "2020-01-01".to_string(),
+            check_out_date: "2020-01-08".to_string(),
+            status: None
+        };
+
+        assert!(create(failed_booking).is_err());
+    }
+
+    #[test]
+    fn fetch_booking() {
+        while let None = fetch_by_id(1) {
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        }
+
+        let booking: RoomBooking = fetch_by_id(1).unwrap();
+        assert_eq!(booking, dummmy_booking_success());
+    }
+
+    #[test]
+    fn update_booking_status() {
+        while let None = fetch_by_id(1) {
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        }
+
+        assert!(create(dummmy_booking()).is_ok());
+
+        assert_eq!(status(2, BookingStatus::Complete), true);
+        let booking: RoomBooking = fetch_by_id(2).unwrap();
+        assert_eq!(booking.status, Some(BookingStatus::Complete));
+    }
 }

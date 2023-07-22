@@ -31,7 +31,7 @@ pub fn create_room_booking(
 #[openapi(tag = "Room Booking")]
 #[get("/booking/<booking_id>")]
 pub fn get_room_booking(booking_id: u32) -> Result<Json<RoomBooking>, Status> {
-    let result: Option<RoomBooking> = storage::fetch_booking(booking_id);
+    let result: Option<RoomBooking> = storage::fetch_by_id(booking_id);
     match result {
         Some(booking) => Ok(Json(booking)),
         None => Err(Status::NotFound),
