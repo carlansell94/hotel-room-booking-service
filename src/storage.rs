@@ -60,7 +60,7 @@ fn save_snapshot(booking_list: &HashMap<u32, RoomBooking>) -> bool {
 ///
 /// # Arguments
 ///
-/// * `booking` - A RoomBooking object containing details of the booking. ```booking_id``` and 
+/// * `booking` - A RoomBooking object containing details of the booking. ```booking_id``` and
 /// ```status``` should be excluded as these are added automatically.
 ///
 /// # Examples
@@ -72,12 +72,12 @@ fn save_snapshot(booking_list: &HashMap<u32, RoomBooking>) -> bool {
 ///     check_in_date: "2020-01-01".to_string(),
 ///     check_out-date: "2020-01-08".to_string()
 /// }
-/// 
+///
 /// create(booking);
 /// ```
 pub fn create(mut booking: RoomBooking) -> Result<RoomBooking, ()> {
     if booking.booking_id != None || booking.status != None {
-        return Err(())
+        return Err(());
     }
 
     let mut booking_list: std::sync::MutexGuard<'_, HashMap<u32, RoomBooking>> =
@@ -251,44 +251,44 @@ pub fn fetch_all() -> Vec<RoomBooking> {
 
 #[cfg(test)]
 mod tests {
-    use crate::storage::*;
     use super::room_booking::RoomBooking;
+    use crate::storage::*;
 
     /// Describes a single room booking
     fn dummmy_booking() -> RoomBooking {
-        return RoomBooking{
+        return RoomBooking {
             booking_id: None,
             customer_id: 1,
             room_type_id: 3,
             check_in_date: "2020-01-01".to_string(),
             check_out_date: "2020-01-08".to_string(),
-            status: None
+            status: None,
         };
     }
 
     /// Describes the expected output when the dummy_booking is created
     fn dummmy_booking_success() -> RoomBooking {
-        return RoomBooking{
+        return RoomBooking {
             booking_id: Some(1),
             customer_id: 1,
             room_type_id: 3,
             check_in_date: "2020-01-01".to_string(),
             check_out_date: "2020-01-08".to_string(),
-            status: Some(BookingStatus::Confirmed)
-        }
+            status: Some(BookingStatus::Confirmed),
+        };
     }
 
     #[test]
     fn create_booking() {
         assert_eq!(create(dummmy_booking()), Ok(dummmy_booking_success()));
 
-        let failed_booking = RoomBooking{
+        let failed_booking = RoomBooking {
             booking_id: Some(5),
             customer_id: 4,
             room_type_id: 2,
             check_in_date: "2020-01-01".to_string(),
             check_out_date: "2020-01-08".to_string(),
-            status: None
+            status: None,
         };
 
         assert!(create(failed_booking).is_err());

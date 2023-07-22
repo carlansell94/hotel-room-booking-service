@@ -75,7 +75,7 @@ impl RoomBooking {
     ///
     /// ```
     /// booking.set_status(BookingStatus::Cancelled);
-    /// 
+    ///
     pub fn set_status(&mut self, booking_status: BookingStatus) {
         self.status = Some(booking_status);
     }
