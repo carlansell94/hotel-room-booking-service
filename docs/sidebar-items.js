@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["monomorphized_function"],"mod":["storage"]};

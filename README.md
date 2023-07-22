@@ -60,6 +60,13 @@ The service exposes an OpenAPI schema using SwaggerUI. To view this, navigate to
 
 For example, if the service is running on localhost on the default port, the correct path will be ```http://127.0.0.1:8000/swagger-ui```
 
+## Documentation
+
+Documentation can be generated using ```cargo doc --no-deps```. Generated documentation can then be found at ```./target/release/room_booking_service```
+
+
+Pre-compiled documentation can be found in the ```docs``` folder. To view the complete documentation, open ```docs/all.html``` in a web browser.
+
 ## Tests
 
 A few tests are included, which check that bookings can be added, fetched and updated successfully. You can run these using ```cargo test```.

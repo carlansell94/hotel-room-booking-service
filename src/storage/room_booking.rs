@@ -7,6 +7,7 @@ use rocket_okapi::okapi::schemars;
 use rocket_okapi::okapi::schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+/// Defines the allowed values for the status of a booking
 #[derive(Clone, Serialize, Deserialize, JsonSchema, PartialEq, Debug)]
 pub enum BookingStatus {
     Confirmed,
@@ -15,6 +16,17 @@ pub enum BookingStatus {
 }
 
 impl BookingStatus {
+    /// Converts a booking status string into the corresponding BookingStatus enum
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A string containing the value to convert
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let status = BookingStatus::from_string("Complete");
+    /// ```
     pub fn from_string(value: &str) -> Option<BookingStatus> {
         match value {
             "Confirmed" => Some(BookingStatus::Confirmed),
@@ -25,6 +37,7 @@ impl BookingStatus {
     }
 }
 
+/// Describes a single room booking
 #[derive(Clone, Serialize, Deserialize, JsonSchema, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct RoomBooking {
@@ -37,10 +50,32 @@ pub struct RoomBooking {
 }
 
 impl RoomBooking {
+    /// Sets the booking id of the current booking.
+    ///
+    /// # Arguments
+    ///
+    /// * `booking_id` - A u32 which holds the id of the booking
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// booking.set_booking_id(1);
+    /// ```
     pub fn set_booking_id(&mut self, booking_id: u32) {
         self.booking_id = Some(booking_id);
     }
 
+    /// Sets the status of the current booking.
+    ///
+    /// # Arguments
+    ///
+    /// * `booking_status` - A BookingStatus enum value
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// booking.set_status(BookingStatus::Cancelled);
+    /// 
     pub fn set_status(&mut self, booking_status: BookingStatus) {
         self.status = Some(booking_status);
     }
