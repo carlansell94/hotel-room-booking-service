@@ -14,6 +14,6 @@ WORKDIR /
 COPY --from=building /room_booking/target/x86_64-unknown-linux-musl/release/room_booking_service ./
 CMD ./room_booking_service
 
-EXPOSE 8000/udp
+EXPOSE 8000
 LABEL org.opencontainers.image.description="Hotel room booking service container"
 LABEL org.opencontainers.image.licenses=GPL-3.0-or-later
