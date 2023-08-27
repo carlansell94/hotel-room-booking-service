@@ -1,6 +1,3 @@
-![Compilation](https://github.com/carlansell94/hotel-room-booking-service/actions/workflows/rust.yml/badge.svg)
-![Docker Build](https://github.com/carlansell94/hotel-room-booking-service/actions/workflows/docker-publish.yml/badge.svg)
-
 # Rust Hotel Room Booking Service
 
 A hotel room booking management service written in rust.
@@ -63,9 +60,6 @@ For example, if the service is running on localhost on the default port, the cor
 ## Documentation
 
 Documentation can be generated using ```cargo doc --no-deps```. Generated documentation can then be found at ```./target/release/room_booking_service```
-
-
-Pre-compiled documentation can be found in the ```docs``` folder. To view the complete documentation, open ```docs/all.html``` in a web browser.
 
 ## Tests
 

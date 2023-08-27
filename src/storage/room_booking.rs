@@ -10,8 +10,11 @@ use serde::{Deserialize, Serialize};
 /// Defines the allowed values for the status of a booking
 #[derive(Clone, Serialize, Deserialize, JsonSchema, PartialEq, Debug)]
 pub enum BookingStatus {
+    /// A booking that has been paid for, but the user has not yet checked in
     Confirmed,
+    /// A booking which has been completed by the user checking in to their room
     Complete,
+    /// A booking that the user has cancelled
     Cancelled,
 }
 
